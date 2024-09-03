@@ -1,0 +1,54 @@
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if len(t) > len(s):
+            return ""
+
+        L = 0
+        R = 0
+        my_map = {}
+        my_map2 = {}
+        ans = ""
+        min_len = float('inf')
+        
+        # Initialize the frequency map for string t
+        for letter in t:
+            my_map2[letter] = my_map2.get(letter, 0) + 1
+
+        # Count of unique characters in t that need to be present in the window
+        required = len(my_map2)
+        formed = 0
+
+        # Iterate over the string s with the right pointer R
+        while R < len(s):
+            # Add the current character to the window
+            char = s[R]
+            my_map[char] = my_map.get(char, 0) + 1
+
+            # If the frequency of the current character matches its frequency in t, increment the formed count
+            if char in my_map2 and my_map[char] == my_map2[char]:
+                formed += 1
+
+            # Try to shrink the window from the left (L) to get the minimum window
+            while L <= R and formed == required:
+                window_len = R - L + 1
+
+                if window_len < min_len:
+                    min_len = window_len
+                    ans = s[L:R+1]
+
+                # The character to be removed from the left of the window
+                left_char = s[L]
+                my_map[left_char] -= 1
+
+                if left_char in my_map2 and my_map[left_char] < my_map2[left_char]:
+                    formed -= 1
+
+                L += 1
+
+            # Expand the window by moving the right pointer
+            R += 1
+
+        if min_len != float('inf'):
+            return ans
+        else 
+            return ""
